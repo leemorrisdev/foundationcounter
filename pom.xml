@@ -37,8 +37,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.foundationdb</groupId>
-			<artifactId>fdb</artifactId>
-			<version>0.2.2-5</version>
+			<artifactId>fdb-java</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jayway.awaitility</groupId>
