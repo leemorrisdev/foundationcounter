@@ -11,31 +11,28 @@ import com.foundationdb.FDB;
 import com.foundationdb.tuple.Tuple;
 
 public class CounterTest {
-	
 	private final static int NUM_THREADS = 100;
 	private final static int NUM_INCREMENTS = 100;
-	
+
 	private Counter c;
-	
+
 	@Test
 	public void testCounter() throws Exception {
-		
-		FDB fdb = FDB.selectAPIVersion(22);
+		FDB fdb = FDB.selectAPIVersion(100);
+		Database db = fdb.open();
 
-		fdb = FDB.selectAPIVersion(22);
-		Database db = fdb.open().get();
-		
 		byte[] counterName = "TESTCOUNTER".getBytes();
 		Tuple t = new Tuple();
 		t = t.add(counterName);
 		c = new Counter(db, t);
-		
+
 		c.clear();
 
 		long start = System.currentTimeMillis();
 		for(int i = 0; i < NUM_THREADS; i++) {
 			new Thread(new Runnable() {
 
+				@Override
 				public void run() {
 					for(int idx = 0; idx < NUM_INCREMENTS; idx++) {
 						c.add(1);
@@ -46,7 +43,7 @@ public class CounterTest {
 
 		await().until(counterComplete());
 		long end = System.currentTimeMillis();
-		
+
 		System.out.println("Total time " + (end - start));
 	}
 
@@ -54,6 +51,7 @@ public class CounterTest {
 
 		return new Callable<Boolean>() {
 
+			@Override
 			public Boolean call() throws Exception {
 				return c.getSnapshot() == 10000;
 			}
